@@ -15,6 +15,13 @@ nbdist/
 .nb-gradle/
 nb-configuration.xml
 
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
 # Eclipse
 .project
 .classpath
