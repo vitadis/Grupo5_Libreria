@@ -4,6 +4,9 @@
 *.war
 *.ear
 
+# Archivo de configuracion de la base de datos
+configFile.properties
+
 # NetBeans
 nbproject/private/
 nbproject/Makefile-*.mk
