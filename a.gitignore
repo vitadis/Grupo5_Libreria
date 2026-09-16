@@ -1,0 +1,24 @@
+# Compilados Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# VS Code
+.vscode/
+
+# Build output
+bin/
+out/
+build/
+target/
+
+# OS
+.DS_Store
+Thumbs.db
+doc/
