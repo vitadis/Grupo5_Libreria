@@ -4,7 +4,8 @@
  */
 package dao;
 
-import org.json.JSONObject;
+import java.util.List;
+import model.Prestamo;
 
 /**
  *
@@ -12,7 +13,8 @@ import org.json.JSONObject;
  */
 public interface PrestamoDao {
 
-    public void guardar(JSONObject json);
-    public JSONObject cargar();
+    public List<Prestamo> cargar();
+    public void guardar(List<Prestamo> prestamos);
+    public void agregar(Prestamo prestamo); 
     
 }

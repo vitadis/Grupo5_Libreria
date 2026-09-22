@@ -4,113 +4,195 @@
  */
 package repositorio;
 
+import dao.PrestamoDao;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import model.Prestamo;
+import org.json.JSONArray;
 import org.json.JSONObject;
-import dao.PrestamoDao;
 
 /**
  *
  * @author Joel
  */
 public class AccesoPrestamo implements PrestamoDao {
+    // Agregar nuevamente el patron sigleton
 
-    private static AccesoPrestamo instance;
-    
-    private String ruta;
+    private String ruta = "prestamos.json";
 
-    private AccesoPrestamo(String ruta) {
-        this.ruta = ruta;
-    }
-
-    public String getRuta() {
-        return ruta;
-    }
-
-    public void setRuta(String ruta) {
-        this.ruta = ruta;
-    }
-    
-    //======================================================
-    //================== METODO DE INSTACIA ================
-    //======================================================
-    public static AccesoPrestamo getInstance(String ruta){
-        if(instance == null)
-            instance = new AccesoPrestamo(ruta);
-        return instance;
-    }
-    
-    
-    
-    
-
-    //======================================================
-    //===================== METODOS DAO ====================
-    //======================================================
+    // =======================================================================
+    // ============================= METODOS DAO =============================
+    // =======================================================================
     /**
-     * CARGAR JSON: Cargamos con el formato json y retornamos un JsonObject del
-     * fichero json.
+     * CARGAR JSON -> LIST
      *
-     * FLUJO: try donde habrimos el buffer --> creamos dos variable,
-     * String-Linea y un Stringbuilder, para no modificar el formato json que
-     * tenemos. --> while, mientras linea no sea null. --> cogemos todos los
-     * datos en Stringbuilder y lo guardamos en un jsonobject --> Al final
-     * retornamos nuestro objeto.
+     * FLUJO: tenemos una list -> abrimos el fichero mediante un br -> agregamos
+     * el contenido dentro sb-contenido -> si el fichero esta vacio devolvemos
+     * vacio, si no continuamos -> Creo un JsonArray, para agregar todo el
+     * contenido -> recorremos todo el contenido del json y lo convertimos a un
+     * Prestamo y guardamos dentro de la list -> finalmente retornamos la list.
      *
-     * Si ocurre la excepción al momento de leer el archivo, mostramos el
-     * mensaje "se gestionará en gestión de excepciones" --> al final retornara
-     * un objeto vacio.
-     *
-     *
-     * @return JSONObject
+     * @return List<Prestamo.>
      */
     @Override
-    public JSONObject cargar() {
+    public List<Prestamo> cargar() {
+
+        List<Prestamo> prestamos = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(ruta))) {
 
-            String linea;
             StringBuilder contenido = new StringBuilder();
+
+            String linea;
 
             while ((linea = br.readLine()) != null) {
                 contenido.append(linea);
             }
 
-            return new JSONObject(contenido.toString());
+            if (contenido.length() == 0) {
+                return prestamos;
+            }
 
+            JSONArray array = new JSONArray(contenido.toString());
+
+            for (int i = 0; i < array.length(); i++) {
+
+                JSONObject json = array.getJSONObject(i);
+
+                Prestamo prestamo = convertirAPrestamo(json);
+
+                prestamos.add(prestamo);
+            }
         } catch (IOException e) {
-            System.out.println("Error al leer el JSON :( :" + e.getMessage());
-        }
 
-        return new JSONObject();
+            System.out.println("Error al cargar el JSON:(: " + e.getMessage());
+        }
+        return prestamos;
     }
 
     /**
-     * GUARDAR JSON: Agrega el parametro del json que quieres que modifique.
+     * GUARDAR PRESTAMOS:
      *
-     * FLUJO: try de bw --> escribo todo el objeto json, dentro del fichero.
-     * IMPORTANTE: el parametro que agrego en el toString del objeto es la
-     * identación (los espacios).
+     * FLUJO: Creamos un JsonArray, recorremos dentro de la lista y lo guardamos
+     * dentro de nuestro JsonObject, el JsOb lo guardamos dentro del JsonArray
+     * -> finalmente abrimos un bw y escribimos el contenido del array.
      *
-     * Si ocurre una excepcion al agregar --> mensaje de error sin mas :(
-     *
-     * @param json
+     * @param prestamos
      */
     @Override
-    public void guardar(JSONObject json) {
+    public void guardar(List<Prestamo> prestamos) {
+
+        JSONArray array = new JSONArray();
+
+        for (Prestamo prestamo : prestamos) {
+
+            JSONObject json = convertirAJson(prestamo);
+
+            array.put(json);
+        }
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(ruta))) {
 
-            bw.write(json.toString(4));
+            bw.write(array.toString(4));
 
         } catch (IOException e) {
 
-            System.out.println("Error al guardar el JSON :((: " + e.getMessage());
+            System.out.println("Error al guardar el JSON :(: " + e.getMessage());
 
         }
+    }
+
+    /**
+     * AGREGAR:
+     *
+     * FLUJO: Cargo la lista, agrego el nuevo prestamo y llamo al metodo
+     * guardar.
+     *
+     * @param prestamo
+     */
+    @Override
+    public void agregar(Prestamo prestamo) {
+
+        // Cargamos los prestamos que ya existen
+        List<Prestamo> prestamos = cargar();
+
+        // Añadimos el nuevo
+        prestamos.add(prestamo);
+
+        // Guardamos la lista completa
+        guardar(prestamos);
+    }
+
+    // =======================================================================
+    // ======================== METODOS AUXILIARES ===========================
+    // =======================================================================
+    /**
+     * DE PRESTAMO A JSONOBJECT:
+     *
+     * FLUJO: agrego cada campo dentro de mi json -> para el map<int,boolean>
+     * recorro en un foreach del map, y agrego todo dentro de librosJSON (su
+     * contenido seria un map de id_Libro : boolean) -> finalmente lo agrego
+     * dentro del json con la clave de libros.
+     */
+    private JSONObject convertirAJson(Prestamo prestamo) {
+
+        JSONObject json = new JSONObject();
+
+        json.put("id", prestamo.getId());
+        json.put("fechaIni", prestamo.getFechaIni().toString());
+        json.put("fechaFin", prestamo.getFechaFin().toString());
+        json.put("idUsuario", prestamo.getIdUsuario());
+
+        JSONObject librosJson = new JSONObject();
+
+        for (Integer idLibro : prestamo.getLibros().keySet()) {
+            boolean estado = prestamo.getLibros().get(idLibro);
+
+            librosJson.put(String.valueOf(idLibro), estado);
+        }
+
+        json.put("libros", librosJson);
+
+        return json;
+    }
+
+    /**
+     * DE JSONOBJECT A PRESTAMO:
+     *
+     * FLUJO: Guardo todo en las variables, segun su key del objeto json. -> el
+     * map lo guardo dentro del jsonObject, y creo otra variable map ->
+     * finalmente recorro el jsonobject, y agrego los valores dentro del map que tengo.
+     */
+    private Prestamo convertirAPrestamo(JSONObject json) {
+
+        int id = json.getInt("id");
+
+        LocalDate fechaIni = LocalDate.parse(json.getString("fechaIni"));
+
+        LocalDate fechaFin = LocalDate.parse(json.getString("fechaFin"));
+
+        int idUsuario = json.getInt("idUsuario");
+
+        Map<Integer, Boolean> libros = new HashMap<>();
+
+        JSONObject librosJson = json.getJSONObject("libros");
+
+        for (String key : librosJson.keySet()) {
+
+            int idLibro = Integer.parseInt(key);
+
+            boolean estado = librosJson.getBoolean(key);
+            libros.put(idLibro, estado);
+        }
+        return new Prestamo(id, fechaIni, fechaFin, libros, idUsuario);
     }
 
 }

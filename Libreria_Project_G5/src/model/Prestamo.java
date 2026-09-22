@@ -65,7 +65,4 @@ public class Prestamo {
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
     }
-    
-    
-    
 }
