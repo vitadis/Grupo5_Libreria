@@ -26,7 +26,28 @@ import org.json.JSONObject;
 public class AccesoPrestamo implements PrestamoDao {
     // Agregar nuevamente el patron sigleton
 
-    private String ruta = "prestamos.json";
+    private String ruta;
+
+    private static AccesoPrestamo instance;
+
+    private AccesoPrestamo() {
+        ruta = "prestamos.json";
+    }
+
+    public static AccesoPrestamo getInstance() {
+        if (instance == null) {
+            instance = new AccesoPrestamo();
+        }
+        return instance;
+    }
+
+    public String getRuta() {
+        return ruta;
+    }
+
+    public void setRuta(String ruta) {
+        this.ruta = ruta;
+    }
 
     // =======================================================================
     // ============================= METODOS DAO =============================
@@ -169,7 +190,8 @@ public class AccesoPrestamo implements PrestamoDao {
      *
      * FLUJO: Guardo todo en las variables, segun su key del objeto json. -> el
      * map lo guardo dentro del jsonObject, y creo otra variable map ->
-     * finalmente recorro el jsonobject, y agrego los valores dentro del map que tengo.
+     * finalmente recorro el jsonobject, y agrego los valores dentro del map que
+     * tengo.
      */
     private Prestamo convertirAPrestamo(JSONObject json) {
 
