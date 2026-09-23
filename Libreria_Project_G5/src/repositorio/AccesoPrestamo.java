@@ -10,11 +10,6 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import model.Prestamo;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,7 +19,6 @@ import org.json.JSONObject;
  * @author Joel
  */
 public class AccesoPrestamo implements PrestamoDao {
-    // Agregar nuevamente el patron sigleton
 
     private String ruta;
 
@@ -32,8 +26,10 @@ public class AccesoPrestamo implements PrestamoDao {
 
     private AccesoPrestamo() {
         ruta = "prestamos.json";
+        crearJSONInicial();
     }
 
+    // PATRON SINGLETON
     public static AccesoPrestamo getInstance() {
         if (instance == null) {
             instance = new AccesoPrestamo();
@@ -53,21 +49,17 @@ public class AccesoPrestamo implements PrestamoDao {
     // ============================= METODOS DAO =============================
     // =======================================================================
     /**
-     * CARGAR JSON -> LIST
+     * CARGAR JSON -> JSONArray
      *
-     * FLUJO: tenemos una list -> abrimos el fichero mediante un br -> agregamos
-     * el contenido dentro sb-contenido -> si el fichero esta vacio devolvemos
-     * vacio, si no continuamos -> Creo un JsonArray, para agregar todo el
-     * contenido -> recorremos todo el contenido del json y lo convertimos a un
-     * Prestamo y guardamos dentro de la list -> finalmente retornamos la list.
+     * FLUJO: Creo objeto JSONArray -> try (almaceno el contenido dentro del
+     * objeto JSONArray) catch (excepcion).
      *
-     * @return List<Prestamo.>
+     * @return JSONArray
      */
     @Override
-    public List<Prestamo> cargar() {
+    public JSONArray cargar() {
 
-        List<Prestamo> prestamos = new ArrayList<>();
-
+        JSONArray prestamos = new JSONArray();
         try (BufferedReader br = new BufferedReader(new FileReader(ruta))) {
 
             StringBuilder contenido = new StringBuilder();
@@ -78,51 +70,29 @@ public class AccesoPrestamo implements PrestamoDao {
                 contenido.append(linea);
             }
 
-            if (contenido.length() == 0) {
-                return prestamos;
-            }
+            prestamos = new JSONArray(contenido.toString());
 
-            JSONArray array = new JSONArray(contenido.toString());
-
-            for (int i = 0; i < array.length(); i++) {
-
-                JSONObject json = array.getJSONObject(i);
-
-                Prestamo prestamo = convertirAPrestamo(json);
-
-                prestamos.add(prestamo);
-            }
         } catch (IOException e) {
 
-            System.out.println("Error al cargar el JSON:(: " + e.getMessage());
+            System.out.println("Error al cargar el JSON :(: " + e.getMessage());
         }
+
         return prestamos;
     }
 
     /**
      * GUARDAR PRESTAMOS:
      *
-     * FLUJO: Creamos un JsonArray, recorremos dentro de la lista y lo guardamos
-     * dentro de nuestro JsonObject, el JsOb lo guardamos dentro del JsonArray
-     * -> finalmente abrimos un bw y escribimos el contenido del array.
+     * FLUJO: try (escribe el jsonArray), catch(excepcion).
      *
      * @param prestamos
      */
     @Override
-    public void guardar(List<Prestamo> prestamos) {
-
-        JSONArray array = new JSONArray();
-
-        for (Prestamo prestamo : prestamos) {
-
-            JSONObject json = convertirAJson(prestamo);
-
-            array.put(json);
-        }
+    public void guardar(JSONArray prestamos) {
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(ruta))) {
 
-            bw.write(array.toString(4));
+            bw.write(prestamos.toString(4));
 
         } catch (IOException e) {
 
@@ -142,13 +112,10 @@ public class AccesoPrestamo implements PrestamoDao {
     @Override
     public void agregar(Prestamo prestamo) {
 
-        // Cargamos los prestamos que ya existen
-        List<Prestamo> prestamos = cargar();
+        JSONArray prestamos = cargar();
 
-        // Añadimos el nuevo
-        prestamos.add(prestamo);
+        prestamos.put(convertirAJson(prestamo));
 
-        // Guardamos la lista completa
         guardar(prestamos);
     }
 
@@ -186,35 +153,30 @@ public class AccesoPrestamo implements PrestamoDao {
     }
 
     /**
-     * DE JSONOBJECT A PRESTAMO:
+     * CREAR JSON INICIAL:
+     * 
+     * FLUJO: try (si existe: return -> try bw) catch(excepcion).
      *
-     * FLUJO: Guardo todo en las variables, segun su key del objeto json. -> el
-     * map lo guardo dentro del jsonObject, y creo otra variable map ->
-     * finalmente recorro el jsonobject, y agrego los valores dentro del map que
-     * tengo.
      */
-    private Prestamo convertirAPrestamo(JSONObject json) {
+    private void crearJSONInicial() {
 
-        int id = json.getInt("id");
+        try {
+            java.io.File archivo = new java.io.File(ruta);
 
-        LocalDate fechaIni = LocalDate.parse(json.getString("fechaIni"));
+            if (archivo.exists()) {
+                return;
+            }
 
-        LocalDate fechaFin = LocalDate.parse(json.getString("fechaFin"));
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(ruta))) {
 
-        int idUsuario = json.getInt("idUsuario");
+                bw.write("[]");
 
-        Map<Integer, Boolean> libros = new HashMap<>();
+            }
+        } catch (IOException e) {
 
-        JSONObject librosJson = json.getJSONObject("libros");
+            System.out.println("Error al crear el JSON inicial :(: " + e.getMessage());
 
-        for (String key : librosJson.keySet()) {
-
-            int idLibro = Integer.parseInt(key);
-
-            boolean estado = librosJson.getBoolean(key);
-            libros.put(idLibro, estado);
         }
-        return new Prestamo(id, fechaIni, fechaFin, libros, idUsuario);
     }
 
 }
