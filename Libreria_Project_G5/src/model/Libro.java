@@ -22,6 +22,10 @@ public class Libro {
         this.disponible = disponible;
         this.ruta = ruta;
     }
+
+    public Libro() {
+        
+    }
     
     @Override
     public String toString() {
