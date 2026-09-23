@@ -112,13 +112,10 @@ public class AccesoPrestamo implements PrestamoDao {
     @Override
     public void agregar(Prestamo prestamo) {
 
-        // Cargamos los prestamos que ya existen
         JSONArray prestamos = cargar();
 
-        // Añadimos el nuevo
         prestamos.put(convertirAJson(prestamo));
 
-        // Guardamos la lista completa
         guardar(prestamos);
     }
 
