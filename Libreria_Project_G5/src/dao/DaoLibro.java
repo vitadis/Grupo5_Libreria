@@ -14,5 +14,11 @@ public interface DaoLibro {
     public Libro obtenerPorId(int id) throws AccesoDatosException,LibroNoEncontradoException;
         
     public List<Libro> obtenerTodosDispo() throws AccesoDatosException;
+    
+    public void devolverLibroPorId(int idLibro);
+    
+    public Libro buscarLibroPorNombre(String nombre);
+    
+    public String buscarLibroPorId(int id);
 }
 
