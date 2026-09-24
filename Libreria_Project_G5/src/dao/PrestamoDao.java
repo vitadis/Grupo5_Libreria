@@ -13,8 +13,8 @@ import model.Prestamo;
  */
 public interface PrestamoDao {
 
-    public List<Prestamo> cargar();
-    public void guardar(List<Prestamo> prestamos);
+    public JSONArray cargar();
+    public void guardar(JSONArray prestamos);
     public void agregar(Prestamo prestamo); 
     
 }
