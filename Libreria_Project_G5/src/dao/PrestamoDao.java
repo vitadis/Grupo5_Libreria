@@ -4,8 +4,8 @@
  */
 package dao;
 
+import java.util.List;
 import model.Prestamo;
-import org.json.JSONArray;
 
 /**
  *
@@ -13,8 +13,8 @@ import org.json.JSONArray;
  */
 public interface PrestamoDao {
 
-    public JSONArray cargar();
-    public void guardar(JSONArray prestamos);
-    public void agregar(Prestamo prestamo);
+    public List<Prestamo> cargar();
+    public void guardar(List<Prestamo> prestamos);
+    public void agregar(Prestamo prestamo); 
     
 }
