@@ -7,7 +7,7 @@ package controller;
 import dao.PrestamoDao;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import repositorio.AccesoPrestamo;
+import repository.AccesoPrestamo;
 
 /**
  *
@@ -26,6 +26,7 @@ public class PrestamoController {
     private JSONArray getCargarDatos() {
         if (seModifico || cargarDatos == null) {
             cargarDatos = dao.cargar();
+            seModifico = false;
         }
         return cargarDatos;
     }
@@ -36,11 +37,7 @@ public class PrestamoController {
     public void mostrarHistorialLibro(int id) {
         JSONArray prestamos = getCargarDatos();
 
-        for (int i = 0; i < prestamos.length(); i++) {
-
-        }
-
-        prestamos.forEach(o -> {
+        prestamos.forEach( o -> {
             JSONObject prestamo = (JSONObject) o;
             JSONObject libros = prestamo.getJSONObject("libros");
             prestamo.remove("libros");
@@ -51,8 +48,16 @@ public class PrestamoController {
                 if (idLibro == id) {
                     // obtener los valores y enseñar
                     // IMPORTANTE: enseñar el titulo del libro, haciendo una consulta en la base de datos.
+                    
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("---------------------------------------------\n");
+                    sb.append(prestamo.getInt("id")+"\n");
+                    sb.append(prestamo.getString("fechaIni")+"\n");
+                    sb.append(libros.getString(idLibro+"")+"\n");
+                    sb.append(prestamo.getInt("idUsuario")+"\n");
+                    sb.append("---------------------------------------------");
 
-                    System.out.println(prestamo.toString(4));
+                    System.out.println(sb.toString());
                 }
 
             }
