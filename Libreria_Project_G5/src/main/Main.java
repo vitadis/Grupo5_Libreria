@@ -35,9 +35,8 @@ public class Main {
                 + "\t7. Ver historial\n"
                 + "Seleccionna una opcion: ";
 
-        int opcion = Util.leerInt(menu);
-
         while (true) {
+            int opcion = Util.leerInt(menu);
             switch (opcion) {
                 case 0 ->
                     System.exit(0);
