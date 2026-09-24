@@ -10,6 +10,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import model.Prestamo;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -136,15 +137,14 @@ public class AccesoPrestamo implements PrestamoDao {
 
         json.put("id", prestamo.getId());
         json.put("fechaIni", prestamo.getFechaIni().toString());
-        json.put("fechaFin", prestamo.getFechaFin().toString());
         json.put("idUsuario", prestamo.getIdUsuario());
 
         JSONObject librosJson = new JSONObject();
 
         for (Integer idLibro : prestamo.getLibros().keySet()) {
-            boolean estado = prestamo.getLibros().get(idLibro);
+            LocalDate fechaFin = prestamo.getLibros().get(idLibro);
 
-            librosJson.put(String.valueOf(idLibro), estado);
+            librosJson.put(String.valueOf(idLibro), fechaFin);
         }
 
         json.put("libros", librosJson);

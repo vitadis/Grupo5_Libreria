@@ -12,16 +12,15 @@ import java.util.Map;
  * @author Joel
  */
 public class Prestamo {
+
     private int id;
     private LocalDate fechaIni;
-    private LocalDate fechaFin;
-    private Map<Integer,Boolean> libros; // idLibro,boolean
+    private Map<Integer, LocalDate> libros; // idLibro,fechaFin
     private int idUsuario;
 
-    public Prestamo(int id, LocalDate fechaIni, LocalDate fechaFin, Map<Integer, Boolean> libros, int idUsuario) {
+    public Prestamo(int id, LocalDate fechaIni, int idUsuario, Map<Integer, LocalDate> libros) {
         this.id = id;
         this.fechaIni = fechaIni;
-        this.fechaFin = fechaFin;
         this.libros = libros;
         this.idUsuario = idUsuario;
     }
@@ -42,19 +41,11 @@ public class Prestamo {
         this.fechaIni = fechaIni;
     }
 
-    public LocalDate getFechaFin() {
-        return fechaFin;
-    }
-
-    public void setFechaFin(LocalDate fechaFin) {
-        this.fechaFin = fechaFin;
-    }
-
-    public Map<Integer, Boolean> getLibros() {
+    public Map<Integer, LocalDate> getLibros() {
         return libros;
     }
 
-    public void setLibros(Map<Integer, Boolean> libros) {
+    public void setLibros(Map<Integer, LocalDate> libros) {
         this.libros = libros;
     }
 
@@ -64,5 +55,9 @@ public class Prestamo {
 
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
+    }
+
+    public boolean libroDisponible(int idLibro) {
+        return libros.get(id) != null;
     }
 }
