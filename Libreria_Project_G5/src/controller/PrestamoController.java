@@ -7,7 +7,7 @@ package controller;
 import dao.PrestamoDao;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import repositorio.AccesoPrestamo;
+import repository.AccesoPrestamo;
 
 /**
  *
@@ -60,8 +60,7 @@ public class PrestamoController {
                     sb.append(libros.getString(idLibro+"")+"\n");
                     sb.append(prestamo.getInt("idUsuario")+"\n");
                     sb.append("---------------------------------------------");
-                    
-                    
+
                     System.out.println(sb.toString());
                 }
 
