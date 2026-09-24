@@ -32,6 +32,12 @@ public class AccesoLibro implements DaoLibro {
     private final String SQLLIBRONUEVO = Sentencias.LIBRO_NUEVO;
     private final String SQLLIBROPORID = Sentencias.LIBRO_POR_ID;
     private final String SQLLIBROSDISPO = Sentencias.LIBROS_DISPONIBLES;
+    private static final String ACTUALIZAR_DISPONIBILIDAD_POR_ID = 
+            "UPDATE LIBRO SET DISPONIBLE = ? WHERE ID_LIBRO = ?";
+    private static final String BUSCAR_LIBRO_POR_NOMBRE = 
+            "SELECT * FROM LIBRO WHERE TITULO = ?";
+    private static final String BUSCAR_NOMBRE_POR_ID = 
+            "SELECT TITULO FROM LIBRO WHERE ID_LIBRO = ?";
     // private final String SQLLIBRODISPO = Sentencias.X;
 
     private AccesoLibro() {
@@ -46,6 +52,10 @@ public class AccesoLibro implements DaoLibro {
             instancia = new AccesoLibro();
         }
         return instancia;
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(this.urlBD, this.userBD, this.passwordBD);
     }
 
     /**
@@ -123,6 +133,65 @@ public class AccesoLibro implements DaoLibro {
          }
         return libros;
 
+    }
+
+     @Override
+    public void devolverLibroPorId(int idLibro) {
+        try (Connection con = getConnection();
+             PreparedStatement stmt = con.prepareStatement(ACTUALIZAR_DISPONIBILIDAD_POR_ID)) {
+            stmt.setBoolean(1, true); 
+            stmt.setInt(2, idLibro);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Libro buscarLibroPorNombre(String nombre) {
+        Libro libro = null;
+
+        try (Connection con = getConnection();
+             PreparedStatement stmt = con.prepareStatement(BUSCAR_LIBRO_POR_NOMBRE)) {
+
+            stmt.setString(1, nombre);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    libro = new Libro();
+                    libro.setId(rs.getInt("ID_LIBRO"));
+                    libro.setTitulo(rs.getString("NOMBRE"));
+                    libro.setDisponible(rs.getBoolean("DISPONIBLE"));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return libro;
+    }
+
+    @Override
+    public String buscarLibroPorId(int id) {
+        String nombreLibro = null;
+
+        try (Connection con = getConnection();
+             PreparedStatement stmt = con.prepareStatement(BUSCAR_NOMBRE_POR_ID)) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    nombreLibro = rs.getString("NOMBRE");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return nombreLibro;
     }
 
 }
