@@ -6,6 +6,7 @@ package dao;
 
 import model.Prestamo;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -16,5 +17,7 @@ public interface PrestamoDao {
     public JSONArray cargar();
     public void guardar(JSONArray prestamos);
     public void agregar(Prestamo prestamo);
+    public boolean creardb();
+    public boolean modificar(JSONObject prestamo);
     
 }

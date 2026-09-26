@@ -18,11 +18,7 @@ public class Prestamo {
     private Map<Integer, LocalDate> libros; // idLibro,fechaFin
     private int idUsuario;
 
-    public Prestamo(int id, LocalDate fechaIni, int idUsuario, Map<Integer, LocalDate> libros) {
-        this.id = id;
-        this.fechaIni = fechaIni;
-        this.libros = libros;
-        this.idUsuario = idUsuario;
+    public Prestamo(){
     }
 
     public int getId() {
