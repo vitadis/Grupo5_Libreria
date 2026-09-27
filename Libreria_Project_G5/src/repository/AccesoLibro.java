@@ -17,7 +17,7 @@ import model.Libro;
 
 /**
  *
- * @author Hodei.Torres
+ * @author Hodei.Torres , An Azkona
  */
 public class AccesoLibro implements DaoLibro {
 
@@ -32,13 +32,9 @@ public class AccesoLibro implements DaoLibro {
     private final String SQLLIBRONUEVO = Sentencias.LIBRO_NUEVO;
     private final String SQLLIBROPORID = Sentencias.LIBRO_POR_ID;
     private final String SQLLIBROSDISPO = Sentencias.LIBROS_DISPONIBLES;
-    private static final String ACTUALIZAR_DISPONIBILIDAD_POR_ID = 
-            "UPDATE LIBRO SET DISPONIBLE = ? WHERE ID_LIBRO = ?";
-    private static final String BUSCAR_LIBRO_POR_NOMBRE = 
-            "SELECT * FROM LIBRO WHERE TITULO = ?";
-    private static final String BUSCAR_NOMBRE_POR_ID = 
-            "SELECT TITULO FROM LIBRO WHERE ID_LIBRO = ?";
-    // private final String SQLLIBRODISPO = Sentencias.X;
+    private final String ACTUALIZAR_DISPONIBILIDAD_POR_ID = Sentencias.ACTUALIZAR_DISPONIBILIDAD_POR_ID;
+    private final String BUSCAR_LIBRO_POR_NOMBRE = Sentencias.BUSCAR_LIBRO_POR_NOMBRE;
+    
 
     private AccesoLibro() {
         this.configFile = ResourceBundle.getBundle("configGlobal");
@@ -65,8 +61,7 @@ public class AccesoLibro implements DaoLibro {
      */
     @Override
     public void insertar(Libro objeto) throws AccesoDatosException {
-        try (Connection con = DriverManager.getConnection(urlBD, userBD, passwordBD); 
-                PreparedStatement ps = con.prepareStatement(SQLLIBRONUEVO)) {
+        try (Connection con = DriverManager.getConnection(urlBD, userBD, passwordBD); PreparedStatement ps = con.prepareStatement(SQLLIBRONUEVO)) {
 
             ps.setString(1, objeto.getTitulo());
             ps.setString(2, objeto.getAutor());
@@ -85,22 +80,22 @@ public class AccesoLibro implements DaoLibro {
      */
     @Override
     public Libro obtenerPorId(int id) throws LibroNoEncontradoException, AccesoDatosException {
-        try (Connection con = DriverManager.getConnection(urlBD, userBD, passwordBD); 
-                PreparedStatement ps = con.prepareStatement(SQLLIBROPORID)) {
+        try (Connection con = DriverManager.getConnection(urlBD, userBD, passwordBD); PreparedStatement ps = con.prepareStatement(SQLLIBROPORID)) {
 
             ps.setInt(1, id);
-            
-            try (ResultSet rs = ps.executeQuery()){
-                if(rs.next()){
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
                     return mapLibro(rs);
                 }
             }
             throw new LibroNoEncontradoException("No existe ningun libro con esa ID.");
-            
-    }   catch (SQLException ex) {
-           throw new AccesoDatosException("Error al buscar la id del libro: " + ex.getMessage(), ex);
+
+        } catch (SQLException ex) {
+            throw new AccesoDatosException("Error al buscar la id del libro: " + ex.getMessage(), ex);
         }
     }
+
     private Libro mapLibro(ResultSet rs) throws SQLException {
         return new Libro(
                 rs.getInt("ID"),
@@ -114,65 +109,56 @@ public class AccesoLibro implements DaoLibro {
 
     /**
      *
-     * @return
-     * @throws AccesoDatosException
+     * @return @throws AccesoDatosException
      */
     @Override
     public List<Libro> obtenerTodosDispo() throws AccesoDatosException {
         List<Libro> libros = new ArrayList<>();
-         try (Connection con = DriverManager.getConnection(urlBD, userBD, passwordBD);
-             PreparedStatement ps = con.prepareStatement(SQLLIBROSDISPO);
-                 ResultSet rs = ps.executeQuery()) {
-             
-             while(rs.next()){
-                 libros.add(mapLibro(rs));
-             }
-             
-         } catch(SQLException ex){
-             throw new AccesoDatosException("Error al buscar los libros disponibles: " + ex.getMessage(),ex);
-         }
+        try (Connection con = DriverManager.getConnection(urlBD, userBD, passwordBD); PreparedStatement ps = con.prepareStatement(SQLLIBROSDISPO); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                libros.add(mapLibro(rs));
+            }
+
+        } catch (SQLException ex) {
+            throw new AccesoDatosException("Error al buscar los libros disponibles: " + ex.getMessage(), ex);
+        }
         return libros;
 
     }
 
-     @Override
-    public void devolverLibroPorId(int idLibro) {
-        try (Connection con = getConnection();
-             PreparedStatement stmt = con.prepareStatement(ACTUALIZAR_DISPONIBILIDAD_POR_ID)) {
-            stmt.setBoolean(1, true); 
+    //An
+    @Override
+    public void devolverLibroPorId(int idLibro) throws AccesoDatosException {
+        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(ACTUALIZAR_DISPONIBILIDAD_POR_ID)) {
+            stmt.setBoolean(1, true);
             stmt.setInt(2, idLibro);
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new AccesoDatosException("Error al devolver el libro: " + e.getMessage(), e);
         }
     }
-
+    //An
     @Override
-    public Libro buscarLibroPorNombre(String nombre) {
-        Libro libro = null;
+    public Libro buscarLibroPorTitulo(String nombre) throws AccesoDatosException, LibroNoEncontradoException{
 
-        try (Connection con = getConnection();
-             PreparedStatement stmt = con.prepareStatement(BUSCAR_LIBRO_POR_NOMBRE)) {
+        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(BUSCAR_LIBRO_POR_NOMBRE)) {
 
             stmt.setString(1, nombre);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    libro = new Libro();
-                    libro.setId(rs.getInt("ID_LIBRO"));
-                    libro.setTitulo(rs.getString("NOMBRE"));
-                    libro.setDisponible(rs.getBoolean("DISPONIBLE"));
+                    return mapLibro(rs);
                 }
             }
+            throw new LibroNoEncontradoException("No se encontró ningún libro con el título: " + nombre);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new AccesoDatosException("Error al consultar el libro por título: " + e.getMessage(), e);
         }
-
-        return libro;
     }
-
+    /*
     @Override
     public String buscarLibroPorId(int id) {
         String nombreLibro = null;
@@ -193,5 +179,5 @@ public class AccesoLibro implements DaoLibro {
 
         return nombreLibro;
     }
-
+     */
 }

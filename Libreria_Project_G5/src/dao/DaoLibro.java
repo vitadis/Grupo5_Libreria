@@ -15,10 +15,10 @@ public interface DaoLibro {
         
     public List<Libro> obtenerTodosDispo() throws AccesoDatosException;
     
-    public void devolverLibroPorId(int idLibro);
+    public void devolverLibroPorId(int idLibro) throws AccesoDatosException;
     
-    public Libro buscarLibroPorNombre(String nombre);
+   public Libro buscarLibroPorTitulo(String nombre) throws AccesoDatosException, LibroNoEncontradoException;
     
-    public String buscarLibroPorId(int id);
+    //public String buscarLibroPorId(int id);
 }
 

@@ -19,5 +19,4 @@ public interface PrestamoDao {
     public void agregar(Prestamo prestamo);
     public boolean creardb();
     public boolean modificar(JSONObject prestamo);
-    
 }

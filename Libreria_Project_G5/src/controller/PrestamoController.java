@@ -20,7 +20,7 @@ import repository.AccesoPrestamo;
 
 /**
  *
- * @author Joel
+ * @author Joel, An Azkona
  */
 public class PrestamoController {
 
@@ -190,7 +190,6 @@ public class PrestamoController {
                 System.out.println("Error al acceder a los datos: " + e.getMessage());
             }
 
-            
             if (!libro.isDisponible()) {
                 System.out.println("Libro no disponible");
                 continue;
@@ -286,6 +285,50 @@ public class PrestamoController {
             System.out.println("Libro devuelto correctamente.");
         } else {
             System.out.println("No se pudo registrar la devolucion.");
+        }
+    }
+
+    /**
+     * DEVOLVER LIBRO POR ID DE LIBRO: Busca en el JSON el préstamo activo donde
+     * figura el libro (valor null), le asigna la fecha de hoy, guarda el JSON
+     * y actualiza la BD.
+     */
+    public void devolverLibroPorIdLibro(int idLibro) {
+        if (!cargarDatosMethod()) {
+            System.out.println("No se puede procesar la devolucion en este momento.");
+            return;
+        }
+
+        JSONObject prestamoEncontrado = null;
+        String key = String.valueOf(idLibro);
+
+        for (int i = 0; i < prestamos.length(); i++) {
+            JSONObject p = prestamos.getJSONObject(i);
+            JSONObject libros = p.getJSONObject("libros");
+
+            if (libros.has(key) && libros.isNull(key)) {
+                prestamoEncontrado = p;
+                break;
+            }
+        }
+
+        if (prestamoEncontrado == null) {
+            System.out.println("No se encontro ningun prestamo activo para el libro con ID " + idLibro);
+            return;
+        }
+        JSONObject libros = prestamoEncontrado.getJSONObject("libros");
+        libros.put(key, LocalDate.now().toString());
+
+        if (repositorio.modificar(prestamoEncontrado)) {
+            seModifico = true;
+            try {
+                daoLibro.devolverLibroPorId(idLibro);
+                System.out.println("Devolucion registrada con exito y libro disponible en BD.");
+            } catch (AccesoDatosException e) {
+                System.out.println("Se actualizo el fichero pero fallo la base de datos: " + e.getMessage());
+            }
+        } else {
+            System.out.println("No se pudo guardar la devolucion en el fichero.");
         }
     }
 

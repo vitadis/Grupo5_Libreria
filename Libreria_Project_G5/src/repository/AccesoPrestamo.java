@@ -37,6 +37,7 @@ public class AccesoPrestamo implements PrestamoDao {
     }
 
     // PATRON SINGLETON
+    
     public static AccesoPrestamo getInstance() {
         if (instance == null) {
             instance = new AccesoPrestamo();
@@ -192,6 +193,7 @@ public class AccesoPrestamo implements PrestamoDao {
 
         return true;
     }
+    
 
     // =======================================================================
     // ======================== METODOS AUXILIARES ===========================
