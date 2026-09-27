@@ -13,7 +13,9 @@ import utilidades.Util;
  */
 public class Main {
 
-    
+    // CONTROLADORES
+    private static final PrestamoController CONTROLLER_PRESTAMO = new PrestamoController();
+
     /**
      * @param args the command line arguments
      */
@@ -38,8 +40,10 @@ public class Main {
         while (true) {
             int opcion = Util.leerInt(menu);
             switch (opcion) {
-                case 0 ->
+                case 0 ->{
+                    System.out.println("Adios, cerrando programa");
                     System.exit(0);
+                }
                 case 3 ->
                     realizarPrestamo();
                 case 7 ->
@@ -51,15 +55,17 @@ public class Main {
     }
 
     public static void realizarPrestamo() {
-
+        System.out.println("======= LIBROS DISPONIBLES =======");
+        // IMPORTANTE: llamar a los libros disponibles
+        int numLibros = Util.leerInt("Cuantos libros son?");
+        
+        CONTROLLER_PRESTAMO.hacerPrestamo(numLibros);
     }
 
     // HISTORIAL DE PRESTAMO DE UN LIBRO
     public static void verHistorial() {
-        PrestamoController controlador = new PrestamoController();
-
         int idLibro = Util.leerInt("Escribe el id del libro: ");
-        controlador.mostrarHistorialLibro(idLibro);
+        CONTROLLER_PRESTAMO.mostrarHistorialLibro(idLibro);
     }
 
 }
