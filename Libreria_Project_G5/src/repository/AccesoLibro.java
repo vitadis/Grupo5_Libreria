@@ -1,5 +1,6 @@
 package repository;
 
+import utilidades.Sentencias;
 import dao.DaoLibro;
 import exceptions.AccesoDatosException;
 import exceptions.LibroNoEncontradoException;
