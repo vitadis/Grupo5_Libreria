@@ -4,7 +4,9 @@
  */
 package main;
 
+import controller.LibroController;
 import controller.PrestamoController;
+import model.Genero;
 import utilidades.Util;
 
 /**
@@ -13,9 +15,7 @@ import utilidades.Util;
  */
 public class Main {
 
-    // CONTROLADORES
-    private static final PrestamoController CONTROLLER_PRESTAMO = new PrestamoController();
-
+    // Instancio 
     /**
      * @param args the command line arguments
      */
@@ -40,12 +40,14 @@ public class Main {
         while (true) {
             int opcion = Util.leerInt(menu);
             switch (opcion) {
-                case 0 ->{
-                    System.out.println("Adios, cerrando programa");
+                case 0 ->
                     System.exit(0);
-                }
+                case 1 ->
+                    registrarLibro();
                 case 3 ->
                     realizarPrestamo();
+                case 5 ->
+                    LibroController.mostrarLibroDispo();
                 case 7 ->
                     verHistorial();
                 default ->
@@ -55,17 +57,42 @@ public class Main {
     }
 
     public static void realizarPrestamo() {
-        System.out.println("======= LIBROS DISPONIBLES =======");
-        // IMPORTANTE: llamar a los libros disponibles
-        int numLibros = Util.leerInt("Cuantos libros son?");
-        
-        CONTROLLER_PRESTAMO.hacerPrestamo(numLibros);
+
     }
 
     // HISTORIAL DE PRESTAMO DE UN LIBRO
     public static void verHistorial() {
+        PrestamoController controlador = new PrestamoController();
+
         int idLibro = Util.leerInt("Escribe el id del libro: ");
-        CONTROLLER_PRESTAMO.mostrarHistorialLibro(idLibro);
+        controlador.mostrarHistorialLibro(idLibro);
     }
+
+    //METODO PARA REGISTRAS UN NUEVO LIBRO
+    public static void registrarLibro() {
+
+        LibroController controlador = new LibroController();
+
+        String titulo = Util.introducirCadena("Introduce el titulo del libro: ");
+        String autor = Util.introducirCadena("Introduce el nombre del autor: ");
+        Genero genero = elegirGenero();
+
+        System.out.println("¿El libro esta disponible?");
+        Boolean disponible = Util.leerBoolean();
+
+        controlador.registrarLibro(titulo, autor, genero, disponible);
+    }
+
+    //METODO PARA ELEGIR EL GENERO DEL LIBRO
+    public static Genero elegirGenero() {
+        LibroController controlador = new LibroController();
+
+        Genero[] generos = controlador.generos();
+
+        int opcion = Util.leerInt("Introduce el numero de opcion: ", 1, generos.length);
+        return generos[opcion - 1];
+    }
+
+    
 
 }
