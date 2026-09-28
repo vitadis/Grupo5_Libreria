@@ -45,8 +45,7 @@ public class AccesoLibro extends AccesoDataBase implements DaoLibro {
      */
     @Override
     public void insertar(Libro objeto) throws AccesoDatosException {
-        try (Connection con = getConnection(); 
-            PreparedStatement ps = con.prepareStatement(SQLLIBRONUEVO)) {
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(SQLLIBRONUEVO)) {
 
             ps.setString(1, objeto.getTitulo());
             ps.setString(2, objeto.getAutor());
@@ -65,8 +64,7 @@ public class AccesoLibro extends AccesoDataBase implements DaoLibro {
      */
     @Override
     public Libro obtenerPorId(int id) throws LibroNoEncontradoException, AccesoDatosException {
-        try (Connection con = getConnection(); 
-            PreparedStatement ps = con.prepareStatement(SQLLIBROPORID)) {
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(SQLLIBROPORID)) {
 
             ps.setInt(1, id);
 
@@ -100,9 +98,7 @@ public class AccesoLibro extends AccesoDataBase implements DaoLibro {
     @Override
     public List<Libro> obtenerTodosDispo() throws AccesoDatosException {
         List<Libro> libros = new ArrayList<>();
-        try (Connection con = getConnection(); 
-            PreparedStatement ps = con.prepareStatement(SQLLIBROSDISPO); 
-            ResultSet rs = ps.executeQuery()) {
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(SQLLIBROSDISPO); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 libros.add(mapLibro(rs));
@@ -112,5 +108,38 @@ public class AccesoLibro extends AccesoDataBase implements DaoLibro {
             throw new AccesoDatosException("Error al buscar los libros disponibles: " + ex.getMessage(), ex);
         }
         return libros;
+    }
+
+    /**
+     * @param libro
+     * @throws LibroNoEncontradoException
+     * @throws AccesoDatosException
+     * 
+     * @author Joel
+     * 
+     */
+    @Override
+    public void modificar(Libro libro) throws LibroNoEncontradoException, AccesoDatosException {
+        if (libro.getGenero() == null) {
+            throw new AccesoDatosException("El género del libro es obligatorio");
+        }
+
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(Sentencias.LIBRO_MODIFICAR)) {
+
+            ps.setString(1, libro.getTitulo());
+            ps.setString(2, libro.getAutor());
+            ps.setString(3, libro.getGenero().name());
+            ps.setBoolean(4, libro.isDisponible());
+            ps.setString(5, libro.getRuta());
+            ps.setInt(6, libro.getId());
+
+            int filas = ps.executeUpdate();
+            if (filas == 0) {
+                throw new LibroNoEncontradoException("No existe ningún libro con el ID " + libro.getId());
+            }
+
+        } catch (SQLException e) {
+            throw new AccesoDatosException("Error al modificar el libro: " + e.getMessage(), e);
+        }
     }
 }

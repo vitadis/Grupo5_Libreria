@@ -160,7 +160,7 @@ public class PrestamoController {
             return;
         }
 
-       prestamos.forEach(o -> {
+        prestamos.forEach(o -> {
             JSONObject prestamo = (JSONObject) o;
             JSONObject usuarios = prestamo.getJSONObject("usuarios");
 
@@ -172,8 +172,8 @@ public class PrestamoController {
                     Usuario usuario;
 
                     try {
-                       usuario = daoUsuario.obtenerUsuarioPorId(idUsuario);
-                    /*} catch (LibroNoEncontradoException e) {
+                        usuario = daoUsuario.obtenerUsuarioPorId(idUsuario);
+                        /*} catch (LibroNoEncontradoException e) {
                         System.out.println("No se encontró el libro con id " + idUsuario);
                         return;*/
                     } catch (AccesoDatosException e) {
@@ -201,14 +201,22 @@ public class PrestamoController {
     /**
      * HACE UN PRESTAMO:
      *
-     * FLUJO: (si el id es <= 0) -> terminar (aseguro que los datos esten
-     * cargados, si no, aviso y termino, para no generar un prestamo con datos
-     * vacios o desactualizados) (for de prestamos -> comprobar que existe el
-     * libro, y que no este pillado -> al momento de guardar en el map,
-     * modificar el getDisponible del libro en la base de datos) (genero el id
-     * de forma segura, si falla, aviso y termino sin guardar).
+     * FLUJO: (si numLibros es <= 0) -> aviso y termino (compruebo que los datos
+     * esten cargados, si no, aviso y termino, para no generar un prestamo con
+     * datos vacios o desactualizados) (pido el id del usuario y compruebo que
+     * existe en la base de datos, con un maximo de 3 intentos; si se agotan,
+     * aviso de que se cancela el prestamo por id de usuario inexistente y
+     * termino; si hay un error de acceso a datos, aviso y termino sin
+     * reintentar) (for de libros -> pido el id, compruebo que existe el libro y
+     * que este disponible, si no, aviso y paso al siguiente -> al momento de
+     * guardar en el map, modifico el disponible del libro a false en la base de
+     * datos) (si el map de libros queda vacio, aviso y termino sin guardar)
+     * (genero el id del prestamo de forma segura, si falla, aviso y termino sin
+     * guardar) (asigno fecha inicial, id de usuario y libros, y agrego el
+     * prestamo).
      *
-     * @param numLibros
+     * @param numLibros numero de libros que se van a prestar; si es <= 0 no se
+     * realiza ningun prestamo
      */
     public void hacerPrestamo(int numLibros) {
         if (numLibros <= 0) {
@@ -221,6 +229,39 @@ public class PrestamoController {
             return;
         }
 
+        // Comprobacion de la existencia del usuario
+        final int MAX_INTENTOS = 3;
+        int intentos = 0;
+        int idUsuario;
+        boolean usuarioValido = false;
+
+        do {
+            idUsuario = utilidades.Util.leerInt("Id Usuario: ");
+            intentos++;
+
+            try {
+                Usuario usuario = AccesoUsuario.getInstance().obtenerUsuarioPorId(idUsuario);
+
+                if (usuario != null) {
+                    usuarioValido = true;
+                } else {
+                    System.out.println("No existe el usuario en la base de datos. Intento "
+                            + intentos + " de " + MAX_INTENTOS);
+                }
+
+            } catch (AccesoDatosException e) {
+                System.out.println("Error de acceso a datos: " + e.getMessage());
+                return;
+            }
+
+        } while (!usuarioValido && intentos < MAX_INTENTOS);
+
+        if (!usuarioValido) {
+            System.out.println("Se cancelo el prestamo, por id de usuario inexistente.");
+            return;
+        }
+
+        // Prestamos mediante un foreach
         Prestamo prestamo = new Prestamo();
 
         Map<Integer, LocalDate> libros = new HashMap<>();
@@ -239,12 +280,24 @@ public class PrestamoController {
                 System.out.println("Error al acceder a los datos: " + e.getMessage());
             }
 
-            
             if (!libro.isDisponible()) {
                 System.out.println("Libro no disponible");
                 continue;
             }
-            libros.put(idLibro, null); //IMPORTANTE: agregar la fecha, si es null no se realizo la baja
+
+            try {
+                libro.setDisponible(false);
+                daoLibro.modificar(libro);
+                System.out.println("Libro agregado correctamente.");
+
+            } catch (LibroNoEncontradoException e) {
+                System.out.println("No se pudo modificar: " + e.getMessage());
+
+            } catch (AccesoDatosException e) {
+                System.out.println("Error de acceso a datos: " + e.getMessage());
+            }
+
+            libros.put(idLibro, null);
         }
         // si esta vacio no guardo el cambio
         if (libros.isEmpty()) {
@@ -261,17 +314,8 @@ public class PrestamoController {
         prestamo.setId(idPrestamo);
         prestamo.setFechaIni(LocalDate.now());
 
-        int idUsuario;
-        do {
-            idUsuario = utilidades.Util.leerInt("Id Usuario: ");
-            /*
-        if(existe usuario){
-            System.out.print("No existe el usuario en la base de datos");
-            // mejor que tenga 3 intentos. al 3ro no añade nada
-        }*/
-        } while (false); // mientras no exista
-
-        prestamo.setIdUsuario(numLibros);
+        // si todo esta bien agrego el idUsuario
+        prestamo.setIdUsuario(idUsuario);
         prestamo.setLibros(libros);
 
         // una vez creado cargo el objeto
