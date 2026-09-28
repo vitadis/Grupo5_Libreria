@@ -4,7 +4,9 @@
  */
 package main;
 
+import controller.LibroController;
 import controller.PrestamoController;
+import model.Genero;
 import utilidades.Util;
 
 /**
@@ -13,7 +15,8 @@ import utilidades.Util;
  */
 public class Main {
 
-    // CONTROLADORES
+    
+    // CONTROLADOR
     private static final PrestamoController CONTROLLER_PRESTAMO = new PrestamoController();
 
     /**
@@ -44,8 +47,10 @@ public class Main {
                     System.out.println("Adios, cerrando programa");
                     System.exit(0);
                 }
+                case 1 -> registrarLibro();
                 case 3 ->
                     realizarPrestamo();
+                case 5 -> LibroController.mostrarLibroDispo();
                 case 7 ->
                     verHistorial();
                 default ->
@@ -66,6 +71,18 @@ public class Main {
     public static void verHistorial() {
         int idLibro = Util.leerInt("Escribe el id del libro: ");
         CONTROLLER_PRESTAMO.mostrarHistorialLibro(idLibro);
+    }
+    
+    //METODO PARA REGISTRAS UN NUEVO LIBRO
+    public static void registrarLibro() {
+
+        LibroController controlador = new LibroController();
+
+        String titulo = Util.introducirCadena("Introduce el titulo del libro: ");
+        String autor = Util.introducirCadena("Introduce el nombre del autor: ");
+        Genero genero = Util.leerGenero();
+
+        controlador.registrarLibro(titulo, autor, genero, true);
     }
 
 }
