@@ -6,6 +6,7 @@ package controller;
 
 import dao.DaoLibro;
 import dao.PrestamoDao;
+import dao.UsuarioDao;
 import exceptions.AccesoDatosException;
 import exceptions.LibroNoEncontradoException;
 import java.time.LocalDate;
@@ -13,10 +14,13 @@ import java.util.HashMap;
 import java.util.Map;
 import model.Libro;
 import model.Prestamo;
+import model.Usuario;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import repository.AccesoLibro;
 import repository.AccesoPrestamo;
+import repository.AccesoUsuario;
 
 /**
  *
@@ -30,6 +34,7 @@ public class PrestamoController {
     // objeto para interactura con el dao
     private final PrestamoDao dao = AccesoPrestamo.getInstance();
     private final DaoLibro daoLibro = AccesoLibro.getInstance();
+    private final UsuarioDao daoUsuario = AccesoUsuario.getInstance();
 
     // referencia al repositorio concreto, solo para poder invocar
     // crearBackup()/restaurarBackup(), que no forman parte del contrato
@@ -140,6 +145,50 @@ public class PrestamoController {
                     sb.append(prestamo.getString("fechaIni")).append("\n");
                     sb.append(JSONObject.NULL.equals(libros.opt(idLibro + "")) ? "Todavia no entregado" : libros.opt(idLibro + "")).append("\n");
                     sb.append(prestamo.getInt("idUsuario")).append("\n");
+                    sb.append("---------------------------------------------");
+
+                    System.out.println(sb.toString());
+                }
+            }
+        }
+        );
+    }
+
+    public void mostrarHistorialUsuario(int idUsuario) {
+
+        if (!cargarDatosMethod()) {
+            return;
+        }
+
+       prestamos.forEach(o -> {
+            JSONObject prestamo = (JSONObject) o;
+            JSONObject usuarios = prestamo.getJSONObject("usuarios");
+
+            for (String key : usuarios.keySet()) {
+                int idU = Integer.parseInt(key);
+
+                if (idU == idUsuario) {
+
+                    Usuario usuario;
+
+                    try {
+                       usuario = daoUsuario.obtenerUsuarioPorId(idUsuario);
+                    /*} catch (LibroNoEncontradoException e) {
+                        System.out.println("No se encontró el libro con id " + idUsuario);
+                        return;*/
+                    } catch (AccesoDatosException e) {
+                        System.out.println("Error al acceder a los datos: " + e.getMessage());
+                        return;
+                    }
+
+                    System.out.println("========== " + usuario.getNombre() + " ==========");
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("---------------------------------------------\n");
+                    sb.append(prestamo.getInt("id")).append("\n");
+                    sb.append(prestamo.getString("fechaIni")).append("\n");
+                    sb.append(prestamo.getInt("idLibro")).append("\n");
+                    /*sb.append(JSONObject.NULL.equals(usuarios.opt(idUsuario + "")) ? "Todavia no entregado" : usuario.opt(idUsuario + "")).append("\n");*/
                     sb.append("---------------------------------------------");
 
                     System.out.println(sb.toString());
