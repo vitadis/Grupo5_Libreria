@@ -12,6 +12,7 @@ public interface DaoLibro {
     public void insertar(Libro objeto) throws AccesoDatosException;     
     public Libro obtenerPorId(int id) throws AccesoDatosException,LibroNoEncontradoException;
     public List<Libro> obtenerTodosDispo() throws AccesoDatosException;
+    public void modificar(Libro objeto) throws LibroNoEncontradoException, AccesoDatosException;
     
 }
 

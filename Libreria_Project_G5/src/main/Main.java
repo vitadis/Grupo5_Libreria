@@ -11,14 +11,11 @@ import utilidades.Util;
 
 /**
  *
- * @author Christian
+ * @author Christian, Joel, Hodei.Torres, An
  */
 public class Main {
 
-    
     // CONTROLADOR
-    private static final PrestamoController CONTROLLER_PRESTAMO = new PrestamoController();
-
     /**
      * @param args the command line arguments
      */
@@ -28,6 +25,8 @@ public class Main {
     }
 
     public static void mainMenu() {
+        final PrestamoController CONTROLLER_PRESTAMO = new PrestamoController();
+
         String menu
                 = "=======GESTION DE LIBRERIA=======\n"
                 + "\t0. Salir\n"
@@ -43,36 +42,44 @@ public class Main {
         while (true) {
             int opcion = Util.leerInt(menu);
             switch (opcion) {
-                case 0 ->{
+                case 0 -> {
                     System.out.println("Adios, cerrando programa");
                     System.exit(0);
                 }
-                case 1 -> registrarLibro();
+                case 1 ->
+                    registrarLibro();
+                case 2 ->
+                    System.out.println("Falta");
                 case 3 ->
-                    realizarPrestamo();
-                case 5 -> LibroController.mostrarLibroDispo();
+                    realizarPrestamo(CONTROLLER_PRESTAMO);
+                case 4 ->
+                    System.out.println("Falta");
+                case 5 ->
+                    LibroController.mostrarLibroDispo();
+                case 6 ->
+                    System.out.println("Falta");
                 case 7 ->
-                    verHistorial();
+                    verHistorial(CONTROLLER_PRESTAMO);
                 default ->
                     System.out.println("Agrega una opcion valida");
             }
         }
     }
 
-    public static void realizarPrestamo() {
+    public static void realizarPrestamo(PrestamoController pc) {
         System.out.println("======= LIBROS DISPONIBLES =======");
         // IMPORTANTE: llamar a los libros disponibles
         int numLibros = Util.leerInt("Cuantos libros son?");
-        
-        CONTROLLER_PRESTAMO.hacerPrestamo(numLibros);
+
+        pc.hacerPrestamo(numLibros);
     }
 
     // HISTORIAL DE PRESTAMO DE UN LIBRO
-    public static void verHistorial() {
+    public static void verHistorial(PrestamoController pc) {
         int idLibro = Util.leerInt("Escribe el id del libro: ");
-        CONTROLLER_PRESTAMO.mostrarHistorialLibro(idLibro);
+        pc.mostrarHistorialLibro(idLibro);
     }
-    
+
     //METODO PARA REGISTRAS UN NUEVO LIBRO
     public static void registrarLibro() {
 
