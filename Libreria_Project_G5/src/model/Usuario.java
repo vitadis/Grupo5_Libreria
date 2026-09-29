@@ -1,17 +1,18 @@
 package model;
 
-import exceptions.*;
-
 /**
  *
  * @author Hodei.Torres
  */
 public class Usuario {
-    int id; 
+
+    int id;
     String nombre;
     String email;
     String telefono;
 
+    public Usuario() {
+    }
 
     public Usuario(int id, String nombre, String email, String telefono) {
         this.id = id;
@@ -22,7 +23,8 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario [id=" + id + ", nombre=" + nombre + ", email=" + email + ", telefono=" + telefono + "]";
+        return "Usuario [id=" + id + ", nombre=" + nombre
+                + ", email=" + email + ", telefono=" + telefono + "]";
     }
 
     public int getId() {
@@ -45,22 +47,15 @@ public class Usuario {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(String telefono) throws TelefonoInvalidoException {
-        if (telefono == null || !telefono.matches("\\d{9}")) {
-            throw new TelefonoInvalidoException();
-        }
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
-
-    public void setEmail(String email) throws EmailInvalidoException {
-        if (email == null || !email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
-            throw new EmailInvalidoException();
-        }
-        this.email = email;
-    }
 }
-

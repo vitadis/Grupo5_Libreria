@@ -2,29 +2,18 @@ CREATE DATABASE libreriadb;
 USE libreriadb;
 
 CREATE TABLE USUARIO(
-ID_USUARIO INT PRIMARY KEY,
+ID_USUARIO INT PRIMARY KEY AUTO_INCREMENT,
 NOMBRE VARCHAR(50),
 EMAIL VARCHAR(50),
 TELEFONO VARCHAR(9));
 
 CREATE TABLE LIBRO(
-ID_LIBRO INT PRIMARY KEY,
+ID_LIBRO INT PRIMARY KEY AUTO_INCREMENT,
 TITULO VARCHAR(50),
 AUTOR VARCHAR(50),
 GENERO ENUM("FANTASIA", "MISTERIO", "ROMANCE"),
 DISPONIBLE BOOLEAN,
 RUTA VARCHAR(50));
-
-/*ESTA TABLA ES EL FICHERO*/
-/*CREATE TABLE PRESTAMO(
-ID_PRESTAMO INT AUTO_INCREMENT PRIMARY KEY,
-ID_USER INT,
-ID_LIBRO INT,
-FECHA_INICIO DATE, 
-FECHA_FIN DATE,
-DEVUELTO BOOLEAN,
-FOREIGN KEY (ID_LIBRO) REFERENCES LIBRO (ID_LIBRO),
-FOREIGN KEY (ID_USUARIO) REFERENCES PRESTAMO (ID_USUARIO));*/
 
 -- Inserción de datos en USUARIO
 INSERT INTO USUARIO (ID_USUARIO, NOMBRE, EMAIL, TELEFONO) VALUES
@@ -36,9 +25,8 @@ INSERT INTO USUARIO (ID_USUARIO, NOMBRE, EMAIL, TELEFONO) VALUES
 
 -- Inserción de datos en LIBRO
 INSERT INTO LIBRO (ID_LIBRO, TITULO, AUTOR, GENERO, DISPONIBLE, RUTA) VALUES
-(1, 'El Nombre del Viento', 'Patrick Rothfuss', 'FANTASIA', TRUE, '/libros/fantasia/nombre_viento.pdf'),
-(2, 'Diez Negritos', 'Agatha Christie', 'MISTERIO', TRUE, '/libros/misterio/diez_negritos.epub'),
-(3, 'Orgullo y Prejuicio', 'Jane Austen', 'ROMANCE', FALSE, '/libros/romance/orgullo_prejuicio.pdf'),
-(4, 'El Imperio Final', 'Brandon Sanderson', 'FANTASIA', TRUE, '/libros/fantasia/imperio_final.epub'),
-(5, 'El Sabueso de los Baskerville', 'Arthur Conan Doyle', 'MISTERIO', FALSE, '/libros/misterio/sabueso.pdf'),
-(6, 'Bajo la Misma Estrella', 'John Green', 'ROMANCE', TRUE, '/libros/romance/bajo_misma_estrella.epub');
+(1, 'Daga sin nombre', 'A.S. Velada', 'FANTASIA', FALSE, 'src/res/DagaSinNombre.jpg'),
+(2, 'Mamá nos dijo adiós', 'Magdalena Latapi', 'ROMANCE', TRUE, 'src/res/MamaNosDijoAdios.jpg'),
+(3, 'Moby Dick', 'Herman Melville', 'FANTASIA', TRUE, 'src/res/MobyDick.jpg'),
+(4, 'La naranja mecánica', 'Anthony Burgess', 'MISTERIO', TRUE, 'src/res/NaranjaMecanica.jpg'),
+(5, 'Pinocho', 'Carlo Collodi', 'FANTASIA', TRUE, 'src/res/Pinocho.jpg');
