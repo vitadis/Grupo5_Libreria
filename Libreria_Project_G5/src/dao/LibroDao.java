@@ -7,7 +7,7 @@ import model.Libro;
  *
  * @author Hodei.Torres
  */
-public interface DaoLibro {
+public interface LibroDao {
 
     public void insertar(Libro objeto) throws AccesoDatosException;     
     public Libro obtenerPorId(int id) throws AccesoDatosException,LibroNoEncontradoException;

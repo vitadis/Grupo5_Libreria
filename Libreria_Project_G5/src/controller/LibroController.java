@@ -2,11 +2,11 @@ package controller;
 
 import java.util.List;
 
-import dao.DaoLibro;
 import exceptions.AccesoDatosException;
 import model.Genero;
 import model.Libro;
 import repository.AccesoLibro;
+import dao.LibroDao;
 
 /**
  *
@@ -14,7 +14,7 @@ import repository.AccesoLibro;
  */
 
 public class LibroController {
-    private static final DaoLibro daoLibro = AccesoLibro.getInstance();
+    private static final LibroDao daoLibro = AccesoLibro.getInstance();
 
     public void registrarLibro(String titulo, String autor, Genero genero, Boolean dispo) {
         Libro libro = new Libro();

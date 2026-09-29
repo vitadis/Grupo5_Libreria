@@ -1,7 +1,6 @@
 package repository;
 
 import utilidades.Sentencias;
-import dao.DaoLibro;
 import exceptions.AccesoDatosException;
 import exceptions.LibroNoEncontradoException;
 import java.sql.Connection;
@@ -12,12 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Genero;
 import model.Libro;
+import dao.LibroDao;
 
 /**
  *
  * @author Hodei.Torres
  */
-public class AccesoLibro extends AccesoDataBase implements DaoLibro {
+public class AccesoLibro extends AccesoDataBase implements LibroDao {
 
     // Constructor + siglenton
     private static AccesoLibro instancia;

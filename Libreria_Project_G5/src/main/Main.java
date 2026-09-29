@@ -5,7 +5,6 @@
 package main;
 
 import controller.LibroController;
-import controller.PrestamoController;
 import model.Genero;
 import utilidades.Util;
 
@@ -25,7 +24,6 @@ public class Main {
     }
 
     public static void mainMenu() {
-        final PrestamoController CONTROLLER_PRESTAMO = new PrestamoController();
 
         String menu
                 = "=======GESTION DE LIBRERIA=======\n"
@@ -50,35 +48,32 @@ public class Main {
                     registrarLibro();
                 case 2 ->
                     System.out.println("Falta");
-                case 3 ->
-                    realizarPrestamo(CONTROLLER_PRESTAMO);
-                case 4 ->
-                    devolverLibro(CONTROLLER_PRESTAMO);
+                case 3 ->{}
+                case 4 ->{}
                 case 5 ->
                     LibroController.mostrarLibroDispo();
                 case 6 ->
                     System.out.println("Falta");
-                case 7 ->
-                    verHistorial(CONTROLLER_PRESTAMO);
+                case 7 ->{}
                 default ->
                     System.out.println("Agrega una opcion valida");
             }
         }
     }
-
+    /*
     public static void realizarPrestamo(PrestamoController pc) {
         System.out.println("======= LIBROS DISPONIBLES =======");
         // IMPORTANTE: llamar a los libros disponibles
         int numLibros = Util.leerInt("Cuantos libros son?");
 
         pc.hacerPrestamo(numLibros);
-    }
+    }*/
 
-    // HISTORIAL DE PRESTAMO DE UN LIBRO
+    /*
     public static void verHistorial(PrestamoController pc) {
         int idLibro = Util.leerInt("Escribe el id del libro: ");
         pc.mostrarHistorialLibro(idLibro);
-    }
+    }*/
 
     //METODO PARA REGISTRAS UN NUEVO LIBRO
     public static void registrarLibro() {
@@ -92,11 +87,11 @@ public class Main {
         controlador.registrarLibro(titulo, autor, genero, true);
     }
 
-    //DEVOLVER LIBRO
+    /*
     private static void devolverLibro(PrestamoController pc) {
         System.out.println("======= DEVOLVER LIBRO =======");
         int id = Util.leerInt("Introduce el id del libro");
         pc.devolverLibroPorIdLibro(id);
-    }
+    }*/
 
 }
