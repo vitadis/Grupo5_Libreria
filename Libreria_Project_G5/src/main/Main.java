@@ -8,6 +8,9 @@ import controller.LibroController;
 import controller.PrestamoController;
 import model.Genero;
 import utilidades.Util;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 
 /**
  *
@@ -21,7 +24,8 @@ public class Main {
      */
     public static void main(String[] args) {
         // main menu
-        mainMenu();
+        //mainMenu();
+        verPortada("Libreria_Project_G5\\src\\res\\Pinocho.jpg");
     }
 
     public static void mainMenu() {
@@ -90,6 +94,22 @@ public class Main {
         Genero genero = Util.leerGenero();
 
         controlador.registrarLibro(titulo, autor, genero, true);
+    }
+
+    public static void verPortada(String ruta) {
+        File img = new File (ruta);
+        if (!img.isFile()) {
+            System.err.println("La imagen no existe: " + img.getPath());
+            return;
+        }
+
+        Desktop desktop = Desktop.getDesktop();
+        try {
+            desktop.open(img);
+        } catch (IOException e){
+            System.err.println(e.getMessage());
+        }
+
     }
 
 }
