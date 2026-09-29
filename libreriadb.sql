@@ -2,7 +2,7 @@ CREATE DATABASE libreriadb;
 USE libreriadb;
 
 CREATE TABLE USUARIO(
-ID_USUARIO INT PRIMARY KEY,
+ID_USUARIO INT PRIMARY KEY AUTO_INCREMENT,
 NOMBRE VARCHAR(50),
 EMAIL VARCHAR(50),
 TELEFONO VARCHAR(9));
@@ -25,7 +25,7 @@ INSERT INTO USUARIO (ID_USUARIO, NOMBRE, EMAIL, TELEFONO) VALUES
 
 -- Inserción de datos en LIBRO
 INSERT INTO LIBRO (ID_LIBRO, TITULO, AUTOR, GENERO, DISPONIBLE, RUTA) VALUES
-(1, 'Daga sin nombre', 'A.S. Velada', 'FANTASIA', TRUE, 'Libreria_Project_G5\\src\\res\\DagaSinNombre.jpg'),
+(1, 'Daga sin nombre', 'A.S. Velada', 'FANTASIA', FALSE, 'Libreria_Project_G5\\src\\res\\DagaSinNombre.jpg'),
 (2, 'Mamá nos dijo adiós', 'Magdalena Latapi', 'ROMANCE', TRUE, 'Libreria_Project_G5\\src\\res\\MamaNosDijoAdios.jpg'),
 (3, 'Moby Dick', 'Herman Melville', 'FANTASIA', TRUE, 'Libreria_Project_G5\\src\\res\\MobyDick.jpg'),
 (4, 'La naranja mecánica', 'Anthony Burgess', 'MISTERIO', TRUE, 'Libreria_Project_G5\\src\\res\\NaranjaMecanica.jpg'),
