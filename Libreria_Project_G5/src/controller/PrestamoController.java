@@ -324,61 +324,63 @@ public class PrestamoController {
     }
 
     /**
-     * DEVOLVER LIBRO:
-     *
-     * FLUJO: aseguro que los datos esten cargados (si falla, aviso y termino)
-     * -> busco en la lista en memoria el prestamo con ese id -> si no existe,
-     * aviso al usuario y termino -> obtengo el objeto libros -> si ese idLibro
-     * no pertenece al prestamo, aviso y termino -> si ya tiene fecha (no es
-     * null), no hago nada y termino -> si esta en null, le pongo la fecha de
-     * hoy -> llamo a modificar() del repositorio con el jsonObject actualizado
-     * -> segun el resultado, informo al usuario si se guardo o no.
-     *
-     * @param idPrestamo
-     * @param idLibro
+     * DEVOLVER LIBRO POR ID DE LIBRO: Busca en el JSON el préstamo activo donde
+     * figura el libro (valor null), le asigna la fecha de hoy, guarda el JSON
+     * y actualiza la BD.
      */
-    public void devolverLibro(int idPrestamo, int idLibro) {
-
+    public void devolverLibroPorIdLibro(int idLibro) {
         if (!cargarDatosMethod()) {
             System.out.println("No se puede procesar la devolucion en este momento.");
             return;
         }
 
         JSONObject prestamoEncontrado = null;
+        String key = String.valueOf(idLibro);
 
         for (int i = 0; i < prestamos.length(); i++) {
-            JSONObject actual = prestamos.getJSONObject(i);
+            JSONObject p = prestamos.getJSONObject(i);
+            JSONObject libros = p.getJSONObject("libros");
 
-            if (actual.getInt("id") == idPrestamo) {
-                prestamoEncontrado = actual;
+            if (libros.has(key) && libros.isNull(key)) {
+                prestamoEncontrado = p;
                 break;
             }
         }
 
         if (prestamoEncontrado == null) {
-            System.out.println("No existe ningun prestamo con ese id.");
+            System.out.println("No se encontro ningun prestamo activo para el libro con ID " + idLibro);
             return;
         }
-
         JSONObject libros = prestamoEncontrado.getJSONObject("libros");
-        String key = String.valueOf(idLibro);
-
-        if (!libros.has(key)) {
-            System.out.println("Ese libro no pertenece a este prestamo.");
-            return;
-        }
-
-        if (!libros.isNull(key)) {
-            return;
-        }
-
         libros.put(key, LocalDate.now().toString());
 
         if (repositorio.modificar(prestamoEncontrado)) {
             seModifico = true;
-            System.out.println("Libro devuelto correctamente.");
+            
+            // Si se modifico, modificar dentro de prestamos
+            Libro libro = null;
+            try {
+                libro = daoLibro.obtenerPorId(idLibro);
+            } catch (LibroNoEncontradoException e) {
+                System.out.println("No se encontró el libro con id " + idLibro);
+            } catch (AccesoDatosException e) {
+                System.out.println("Error al acceder a los datos: " + e.getMessage());
+            }
+            // modifico la visualizacion del libro
+            try {
+                libro.setDisponible(true);
+                daoLibro.modificar(libro);
+                System.out.println("Libro agregado correctamente.");
+
+            } catch (LibroNoEncontradoException e) {
+                System.out.println("No se pudo modificar: " + e.getMessage());
+
+            } catch (AccesoDatosException e) {
+                System.out.println("Error de acceso a datos: " + e.getMessage());
+            }
+            
         } else {
-            System.out.println("No se pudo registrar la devolucion.");
+            System.out.println("No se pudo guardar la devolucion en el fichero.");
         }
     }
 
