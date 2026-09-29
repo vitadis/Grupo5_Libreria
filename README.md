@@ -137,13 +137,13 @@ Libreria_Project_G5/
 ### Configuración del Entorno
 
 1. **Importar la Base de Datos**:
-   Ejecuta el archivo [`libreriadb.sql`](//libreriadb.sql) en tu cliente de MySQL (MySQL Workbench, phpMyAdmin o CLI):
+   Ejecuta el archivo [`libreriadb.sql`](libreriadb.sql) en tu cliente de MySQL (MySQL Workbench, phpMyAdmin o CLI):
    ```bash
    mysql -u root -p < libreriadb.sql
    ```
 
 2. **Configurar las credenciales de MySQL**:
-   Modifica el archivo [`configGlobal.properties`](//Libreria_Project_G5/src/utilidades/configGlobal.properties) con las credenciales de tu servidor MySQL local:
+   Modifica el archivo `configGlobal` con las credenciales de tu servidor MySQL local:
    ```properties
    DB = libreriadb
    Conn = jdbc:mysql://localhost:3306/libreriadb?serverTimezone=Europe/Madrid&useSSL=false
@@ -154,7 +154,7 @@ Libreria_Project_G5/
 
 3. **Ejecutar la Aplicación**:
    - Abre el proyecto `Libreria_Project_G5` en NetBeans.
-   - Haz clic secundario en el proyecto y selecciona **Run** o ejecuta directamente [`Main.java`](//Libreria_Project_G5/src/main/Main.java).
+   - Haz clic secundario en el proyecto y selecciona **Run** o ejecuta directamente [`Main.java`](Libreria_Project_G5/src/main/Main.java).
 
 4. **Clonar el repositorio**:
    ```bash
