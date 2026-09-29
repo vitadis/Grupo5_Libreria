@@ -19,6 +19,8 @@ public class Usuario {
         this.email = email;
         this.telefono = telefono;
     }
+    public Usuario(){
+    }
 
     @Override
     public String toString() {
