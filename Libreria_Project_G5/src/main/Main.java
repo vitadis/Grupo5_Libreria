@@ -53,7 +53,7 @@ public class Main {
                 case 3 ->
                     realizarPrestamo(CONTROLLER_PRESTAMO);
                 case 4 ->
-                    System.out.println("Falta");
+                    devolverLibro(CONTROLLER_PRESTAMO);
                 case 5 ->
                     LibroController.mostrarLibroDispo();
                 case 6 ->
@@ -90,6 +90,13 @@ public class Main {
         Genero genero = Util.leerGenero();
 
         controlador.registrarLibro(titulo, autor, genero, true);
+    }
+
+    //DEVOLVER LIBRO
+    private static void devolverLibro(PrestamoController pc) {
+        System.out.println("======= DEVOLVER LIBRO =======");
+        int id = Util.leerInt("Introduce el id del libro");
+        pc.devolverLibroPorIdLibro(id);
     }
 
 }

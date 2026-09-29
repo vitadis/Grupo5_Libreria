@@ -32,12 +32,7 @@ public class AccesoLibro extends AccesoDataBase implements DaoLibro {
         }
         return instancia;
     }
-
-    // sentencias de base de datos
-    private final String SQLLIBRONUEVO = Sentencias.LIBRO_NUEVO;
-    private final String SQLLIBROPORID = Sentencias.LIBRO_POR_ID;
-    private final String SQLLIBROSDISPO = Sentencias.LIBROS_DISPONIBLES;
-
+    
     /**
      *
      * @param objeto
@@ -45,7 +40,7 @@ public class AccesoLibro extends AccesoDataBase implements DaoLibro {
      */
     @Override
     public void insertar(Libro objeto) throws AccesoDatosException {
-        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(SQLLIBRONUEVO)) {
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(Sentencias.LIBRO_NUEVO)) {
 
             ps.setString(1, objeto.getTitulo());
             ps.setString(2, objeto.getAutor());
@@ -64,7 +59,7 @@ public class AccesoLibro extends AccesoDataBase implements DaoLibro {
      */
     @Override
     public Libro obtenerPorId(int id) throws LibroNoEncontradoException, AccesoDatosException {
-        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(SQLLIBROPORID)) {
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(Sentencias.LIBRO_POR_ID)) {
 
             ps.setInt(1, id);
 
@@ -98,7 +93,7 @@ public class AccesoLibro extends AccesoDataBase implements DaoLibro {
     @Override
     public List<Libro> obtenerTodosDispo() throws AccesoDatosException {
         List<Libro> libros = new ArrayList<>();
-        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(SQLLIBROSDISPO); ResultSet rs = ps.executeQuery()) {
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(Sentencias.LIBROS_DISPONIBLES); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 libros.add(mapLibro(rs));
