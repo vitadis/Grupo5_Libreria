@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -11,14 +8,16 @@ import java.util.Map;
  *
  * @author Joel
  */
-public class Prestamo {
+public class Prestamo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private int id;
     private LocalDate fechaIni;
     private Map<Integer, LocalDate> libros; // idLibro,fechaFin
     private int idUsuario;
 
-    public Prestamo(){
+    public Prestamo() {
     }
 
     public int getId() {
@@ -53,7 +52,8 @@ public class Prestamo {
         this.idUsuario = idUsuario;
     }
 
+    // true si el libro ya fue devuelto (tiene fechaFin)
     public boolean libroDisponible(int idLibro) {
-        return libros.get(id) != null;
+        return libros != null && libros.get(idLibro) != null;
     }
 }

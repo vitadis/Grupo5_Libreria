@@ -5,6 +5,7 @@
 package main;
 
 import controller.LibroController;
+import controller.PrestamoController;
 import model.Genero;
 import utilidades.Util;
 
@@ -25,6 +26,9 @@ public class Main {
 
     public static void mainMenu() {
 
+        // Una sola instancia para mantener la lista en memoria
+        PrestamoController pc = PrestamoController.getInstance();
+
         String menu
                 = "=======GESTION DE LIBRERIA=======\n"
                 + "\t0. Salir\n"
@@ -33,8 +37,7 @@ public class Main {
                 + "\t3. Realizar el prestamo\n"
                 + "\t4. Devolver un libro\n"
                 + "\t5. Consultar libros disponible\n"
-                + "\t6. Consultar prestamos\n"
-                + "\t7. Ver historial\n"
+                + "\t6. Ver historial\n"
                 + "Seleccionna una opcion: ";
 
         while (true) {
@@ -48,32 +51,50 @@ public class Main {
                     registrarLibro();
                 case 2 ->
                     System.out.println("Falta");
-                case 3 ->{}
-                case 4 ->{}
+                case 3 ->
+                    realizarPrestamo(pc);
+                case 4 ->
+                    devolverLibro(pc);
                 case 5 ->
                     LibroController.mostrarLibroDispo();
                 case 6 ->
-                    System.out.println("Falta");
-                case 7 ->{}
+                    verHistorial(pc);
                 default ->
                     System.out.println("Agrega una opcion valida");
             }
         }
     }
-    /*
+
     public static void realizarPrestamo(PrestamoController pc) {
         System.out.println("======= LIBROS DISPONIBLES =======");
-        // IMPORTANTE: llamar a los libros disponibles
+        LibroController.mostrarLibroDispo();
         int numLibros = Util.leerInt("Cuantos libros son?");
 
         pc.hacerPrestamo(numLibros);
-    }*/
+    }
 
-    /*
+    // Ver historial, por libro y por usuario
     public static void verHistorial(PrestamoController pc) {
-        int idLibro = Util.leerInt("Escribe el id del libro: ");
-        pc.mostrarHistorialLibro(idLibro);
-    }*/
+        String menuHistorial
+                = "======= HISTORIAL =======\n"
+                + "\t1. Por libro\n"
+                + "\t2. Por usuario\n"
+                + "Seleccionna una opcion: ";
+
+        int opcion = Util.leerInt(menuHistorial);
+        switch (opcion) {
+            case 1 -> {
+                int idLibro = Util.leerInt("Escribe el id del libro: ");
+                pc.mostrarHistorialLibro(idLibro);
+            }
+            case 2 -> {
+                int idUsuario = Util.leerInt("Escribe el id del usuario: ");
+                pc.mostrarHistorialUsuario(idUsuario);
+            }
+            default ->
+                System.out.println("Agrega una opcion valida");
+        }
+    }
 
     //METODO PARA REGISTRAS UN NUEVO LIBRO
     public static void registrarLibro() {
@@ -87,11 +108,11 @@ public class Main {
         controlador.registrarLibro(titulo, autor, genero, true);
     }
 
-    /*
+    // Metodo para devolver un libro
     private static void devolverLibro(PrestamoController pc) {
         System.out.println("======= DEVOLVER LIBRO =======");
         int id = Util.leerInt("Introduce el id del libro");
         pc.devolverLibroPorIdLibro(id);
-    }*/
+    }
 
 }

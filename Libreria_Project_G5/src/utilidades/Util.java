@@ -1,6 +1,8 @@
 package utilidades;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import model.Genero;
@@ -95,5 +97,22 @@ public class Util {
         }
 
         return generos;
+    }
+
+    // Abrir imagen
+    public static void verPortada(String ruta) {
+        File img = new File(ruta);
+        if (!img.isFile()) {
+            System.err.println("La imagen no existe: " + img.getPath());
+            return;
+        }
+
+        Desktop desktop = Desktop.getDesktop();
+        try {
+            desktop.open(img);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+
     }
 }

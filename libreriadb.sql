@@ -25,8 +25,8 @@ INSERT INTO USUARIO (ID_USUARIO, NOMBRE, EMAIL, TELEFONO) VALUES
 
 -- Inserción de datos en LIBRO
 INSERT INTO LIBRO (ID_LIBRO, TITULO, AUTOR, GENERO, DISPONIBLE, RUTA) VALUES
-(1, 'Daga sin nombre', 'A.S. Velada', 'FANTASIA', TRUE, 'Libreria_Project_G5\\src\\res\\DagaSinNombre.jpg'),
-(2, 'Mamá nos dijo adiós', 'Magdalena Latapi', 'ROMANCE', TRUE, 'Libreria_Project_G5\\src\\res\\MamaNosDijoAdios.jpg'),
-(3, 'Moby Dick', 'Herman Melville', 'FANTASIA', TRUE, 'Libreria_Project_G5\\src\\res\\MobyDick.jpg'),
-(4, 'La naranja mecánica', 'Anthony Burgess', 'MISTERIO', TRUE, 'Libreria_Project_G5\\src\\res\\NaranjaMecanica.jpg'),
-(5, 'Pinocho', 'Carlo Collodi', 'FANTASIA', TRUE, 'Libreria_Project_G5\\src\\res\\Pinocho.jpg');
+(1, 'Daga sin nombre', 'A.S. Velada', 'FANTASIA', FALSE, 'src/res/DagaSinNombre.jpg'),
+(2, 'Mamá nos dijo adiós', 'Magdalena Latapi', 'ROMANCE', TRUE, 'src/res/MamaNosDijoAdios.jpg'),
+(3, 'Moby Dick', 'Herman Melville', 'FANTASIA', TRUE, 'src/res/MobyDick.jpg'),
+(4, 'La naranja mecánica', 'Anthony Burgess', 'MISTERIO', TRUE, 'src/res/NaranjaMecanica.jpg'),
+(5, 'Pinocho', 'Carlo Collodi', 'FANTASIA', TRUE, 'src/res/Pinocho.jpg');
