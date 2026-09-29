@@ -33,7 +33,7 @@ public class AccesoLibro implements DaoLibro {
     private final String SQLLIBROPORID = Sentencias.LIBRO_POR_ID;
     private final String SQLLIBROSDISPO = Sentencias.LIBROS_DISPONIBLES;
     private final String ACTUALIZAR_DISPONIBILIDAD_POR_ID = Sentencias.ACTUALIZAR_DISPONIBILIDAD_POR_ID;
-    private final String BUSCAR_LIBRO_POR_NOMBRE = Sentencias.BUSCAR_LIBRO_POR_NOMBRE;
+    //private final String BUSCAR_LIBRO_POR_NOMBRE = Sentencias.BUSCAR_LIBRO_POR_NOMBRE;
     
 
     private AccesoLibro() {
@@ -139,45 +139,4 @@ public class AccesoLibro implements DaoLibro {
             throw new AccesoDatosException("Error al devolver el libro: " + e.getMessage(), e);
         }
     }
-    //An
-    @Override
-    public Libro buscarLibroPorTitulo(String nombre) throws AccesoDatosException, LibroNoEncontradoException{
-
-        try (Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(BUSCAR_LIBRO_POR_NOMBRE)) {
-
-            stmt.setString(1, nombre);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapLibro(rs);
-                }
-            }
-            throw new LibroNoEncontradoException("No se encontró ningún libro con el título: " + nombre);
-
-        } catch (SQLException e) {
-            throw new AccesoDatosException("Error al consultar el libro por título: " + e.getMessage(), e);
-        }
-    }
-    /*
-    @Override
-    public String buscarLibroPorId(int id) {
-        String nombreLibro = null;
-
-        try (Connection con = getConnection();
-             PreparedStatement stmt = con.prepareStatement(BUSCAR_NOMBRE_POR_ID)) {
-
-            stmt.setInt(1, id);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    nombreLibro = rs.getString("NOMBRE");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return nombreLibro;
-    }
-     */
 }

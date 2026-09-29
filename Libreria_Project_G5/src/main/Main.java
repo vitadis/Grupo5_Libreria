@@ -6,9 +6,6 @@ package main;
 
 import controller.LibroController;
 import controller.PrestamoController;
-import exceptions.AccesoDatosException;
-import exceptions.LibroNoEncontradoException;
-import model.Libro;
 import utilidades.Util;
 
 /**
@@ -45,13 +42,13 @@ public class Main {
         while (true) {
             int opcion = Util.leerInt(menu);
             switch (opcion) {
-                case 0 ->{
+                case 0 -> {
                     System.out.println("Adios, cerrando programa");
                     System.exit(0);
                 }
                 case 3 ->
                     realizarPrestamo();
-                    case 4 -> 
+                case 4 ->
                     devolverLibro();
                 case 7 ->
                     verHistorial();
@@ -65,7 +62,7 @@ public class Main {
         System.out.println("======= LIBROS DISPONIBLES =======");
         // IMPORTANTE: llamar a los libros disponibles
         int numLibros = Util.leerInt("Cuantos libros son?");
-        
+
         CONTROLLER_PRESTAMO.hacerPrestamo(numLibros);
     }
 
@@ -76,23 +73,10 @@ public class Main {
     }
 
     private static void devolverLibro() {
-         System.out.println("======= DEVOLVER LIBRO =======");
-         String titulo = Util.introducirCadena("Introduce el nombre del libro");
-         try {
-            Libro libro = CONTROLLER_LIBRO.buscarLibroPorTitulo(titulo);
+        System.out.println("======= DEVOLVER LIBRO =======");
+        int id = Util.leerInt("Introduce el id del libro");
+        CONTROLLER_PRESTAMO.devolverLibroPorIdLibro(id);
 
-            if (libro.isDisponible()) {
-                System.out.println("El libro \"" + libro.getTitulo() + "\" ya esta disponible.");
-                return;
-            }
-
-            CONTROLLER_PRESTAMO.devolverLibroPorIdLibro(libro.getId());
-
-        } catch (LibroNoEncontradoException e) {
-            System.out.println("No se encontro ningun libro con ese titulo.");
-        } catch (AccesoDatosException e) {
-            System.out.println("Error de acceso a datos: " + e.getMessage());
-        }
     }
 
 }

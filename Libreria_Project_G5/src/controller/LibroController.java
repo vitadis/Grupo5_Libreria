@@ -5,9 +5,6 @@
 package controller;
 
 import dao.DaoLibro;
-import exceptions.AccesoDatosException;
-import exceptions.LibroNoEncontradoException;
-import model.Libro;
 import repository.AccesoLibro;
 
 /**
@@ -28,9 +25,5 @@ public class LibroController {
             instance = new LibroController();
         }
         return instance;
-    }
-    
-    public Libro buscarLibroPorTitulo(String titulo) throws LibroNoEncontradoException, AccesoDatosException {
-        return daoLibro.buscarLibroPorTitulo(titulo);
     }
 }
