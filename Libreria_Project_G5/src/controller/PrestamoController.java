@@ -173,22 +173,18 @@ public class PrestamoController {
 
                     try {
                         usuario = daoUsuario.obtenerUsuarioPorId(idUsuario);
-                        /*} catch (LibroNoEncontradoException e) {
-                        System.out.println("No se encontró el libro con id " + idUsuario);
-                        return;*/
                     } catch (AccesoDatosException e) {
                         System.out.println("Error al acceder a los datos: " + e.getMessage());
                         return;
                     }
 
                     System.out.println("========== " + usuario.getNombre() + " ==========");
-
                     StringBuilder sb = new StringBuilder();
                     sb.append("---------------------------------------------\n");
                     sb.append(prestamo.getInt("id")).append("\n");
                     sb.append(prestamo.getString("fechaIni")).append("\n");
                     sb.append(prestamo.getInt("idLibro")).append("\n");
-                    /*sb.append(JSONObject.NULL.equals(usuarios.opt(idUsuario + "")) ? "Todavia no entregado" : usuario.opt(idUsuario + "")).append("\n");*/
+                    sb.append(JSONObject.NULL.equals(usuarios.opt(idUsuario + "")) ? "Todavia no entregado" : usuarios.opt(idUsuario + "")).append("\n");
                     sb.append("---------------------------------------------");
 
                     System.out.println(sb.toString());

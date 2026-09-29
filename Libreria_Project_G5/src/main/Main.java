@@ -6,6 +6,7 @@ package main;
 
 import controller.LibroController;
 import controller.PrestamoController;
+import controller.UsuarioController;
 import model.Genero;
 import utilidades.Util;
 
@@ -35,7 +36,7 @@ public class Main {
                 + "\t3. Realizar el prestamo\n"
                 + "\t4. Devolver un libro\n"
                 + "\t5. Consultar libros disponible\n"
-                + "\t6. Consultar prestamos\n"
+                + "\t6. Consultar prestamos de usuario\n"
                 + "\t7. Ver historial\n"
                 + "Seleccionna una opcion: ";
 
@@ -49,7 +50,7 @@ public class Main {
                 case 1 ->
                     registrarLibro();
                 case 2 ->
-                    System.out.println("Falta");
+                    registrarUsuario();
                 case 3 ->
                     realizarPrestamo(CONTROLLER_PRESTAMO);
                 case 4 ->
@@ -57,7 +58,7 @@ public class Main {
                 case 5 ->
                     LibroController.mostrarLibroDispo();
                 case 6 ->
-                    System.out.println("Falta");
+                    buscarPrestamosDeUsuario();
                 case 7 ->
                     verHistorial(CONTROLLER_PRESTAMO);
                 default ->
@@ -90,6 +91,26 @@ public class Main {
         Genero genero = Util.leerGenero();
 
         controlador.registrarLibro(titulo, autor, genero, true);
+    }
+    
+    //METODO PARA REGISTRAR UN NUEVO USUARIO
+    public static void registrarUsuario(){
+        UsuarioController controlador = new UsuarioController();
+        
+        String nombre = Util.introducirCadena("Introduce el nombre del usuario: ");
+        String email = Util.introducirCadena("Introduce el email del usuario: ");
+        String telefono = Util.introducirCadena("Introduce el telefono dle usuario: ");
+        
+        controlador.registrarUsuario(nombre, email, telefono);
+    }
+    
+    //METODO PARA BUSCAR PRESTAMOS DE UN USUARIO
+    public static void buscarPrestamosDeUsuario(){
+        PrestamoController controlador = new PrestamoController();
+        
+        int id = Util.leerInt("Introduce el id del usuario:");
+        
+        controlador.mostrarHistorialUsuario(id);
     }
 
     //DEVOLVER LIBRO
