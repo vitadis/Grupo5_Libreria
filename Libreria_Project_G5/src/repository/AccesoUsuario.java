@@ -10,6 +10,10 @@ import exceptions.AccesoDatosException;
 import java.sql.ResultSet;
 import model.Usuario;
 
+/**
+ *
+ * @author Christian
+ */
 public class AccesoUsuario extends AccesoDataBase implements UsuarioDao {
 
     private static AccesoUsuario instancia;
@@ -28,7 +32,7 @@ public class AccesoUsuario extends AccesoDataBase implements UsuarioDao {
             ps.setString(1, user.getNombre());
             ps.setString(2, user.getEmail());
             ps.setString(3, user.getTelefono());
-            ps.executeQuery();
+            ps.executeUpdate(); // CAMBIO: executeQuery() -> executeUpdate()
         } catch (SQLException e) {
             throw new AccesoDatosException("Error al añadir un nuevo USUARIO:" + e.getMessage(), e);
         }

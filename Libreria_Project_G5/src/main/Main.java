@@ -6,6 +6,7 @@ package main;
 
 import controller.LibroController;
 import controller.PrestamoController;
+import controller.UsuarioController;
 import model.Genero;
 import utilidades.Util;
 
@@ -50,7 +51,7 @@ public class Main {
                 case 1 ->
                     registrarLibro();
                 case 2 ->
-                    System.out.println("Falta");
+                    registrarUsuario();
                 case 3 ->
                     realizarPrestamo(pc);
                 case 4 ->
@@ -113,6 +114,17 @@ public class Main {
         System.out.println("======= DEVOLVER LIBRO =======");
         int id = Util.leerInt("Introduce el id del libro");
         pc.devolverLibroPorIdLibro(id);
+    }
+
+    // REGISTRAR USUARIO 
+    public static void registrarUsuario() {
+        UsuarioController controlador = new UsuarioController();
+
+        String nombre = Util.introducirCadena("Nombre: ");
+        String email = Util.leerEmail("Email: ");
+        String telefono = Util.leerTelefono("Telefono: ");
+
+        controlador.registrarUsuario(nombre, email, telefono);
     }
 
 }

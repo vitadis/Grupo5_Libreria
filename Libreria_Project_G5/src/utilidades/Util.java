@@ -115,4 +115,42 @@ public class Util {
         }
 
     }
+
+    // formato del email
+    public static String leerEmail(String mensaje) {
+        String email;
+        boolean error;
+
+        do {
+            error = false;
+            System.out.println(mensaje);
+            email = introducirCadena();
+
+            if (!email.matches("^[\\w.+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+                System.out.println("Email no válido. Introduce un correo correcto.");
+                error = true;
+            }
+
+        } while (error);
+
+        return email;
+    }
+
+    public static String leerTelefono(String mensaje) {
+        String telefono;
+        boolean error;
+
+        do {
+            error = false;
+            telefono = introducirCadena(mensaje);
+
+            if (!telefono.matches("^\\d{9}$")) {
+                System.out.println("Formato telefono incorrecto, son 9 digitos");
+                error = true;
+            }
+
+        } while (error);
+
+        return telefono;
+    }
 }
